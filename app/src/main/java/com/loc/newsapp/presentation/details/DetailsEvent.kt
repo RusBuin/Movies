@@ -4,7 +4,6 @@ import com.loc.newsapp.domain.model.Movie
 
 sealed class DetailsEvent {
 
-//    object SaveArticle : DetailsEvent()
 
     data class UpsertDeleteItem(val movie: Movie) : DetailsEvent()
 

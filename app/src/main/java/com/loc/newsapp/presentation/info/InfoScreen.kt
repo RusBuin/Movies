@@ -17,7 +17,6 @@ import com.loc.newsapp.presentation.Dimens.MediumPadding1
 @Composable
 fun InfoScreen(
     state: InfoState,
-    onBackClick: () -> Unit
 ) {
     Column(
         modifier = Modifier

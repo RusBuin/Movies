@@ -1,24 +1,18 @@
-package com.loc.newsapp.presentation.news_navigator
+package com.loc.newsapp.presentation.movies_navigator
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,8 +30,8 @@ import com.loc.newsapp.presentation.home.HomeViewModel
 import com.loc.newsapp.presentation.info.InfoScreen
 import com.loc.newsapp.presentation.info.InfoViewModel
 import com.loc.newsapp.presentation.navgraph.Route
-import com.loc.newsapp.presentation.news_navigator.components.BottomNavigationItem
-import com.loc.newsapp.presentation.news_navigator.components.NewsBottomNavigation
+import com.loc.newsapp.presentation.movies_navigator.components.BottomNavigationItem
+import com.loc.newsapp.presentation.movies_navigator.components.NewsBottomNavigation
 import com.loc.newsapp.presentation.theme.ThemeScreen
 import com.loc.newsapp.presentation.theme.ThemeViewModel
 
@@ -164,15 +158,12 @@ fun NewsNavigator() {
             }
 
             composable(route = Route.InfoScreen.route) {
-                val viewModel: InfoViewModel = hiltViewModel() // Получаем ViewModel через Hilt
-                val state = viewModel.state.value             // Получаем текущее состояние
-                OnBackClickStateSaver(navController = navController) // Обработка состояния кнопки "Назад"
+                val viewModel: InfoViewModel = hiltViewModel()
+                val state = viewModel.state.value
+                OnBackClickStateSaver(navController = navController)
 
-                InfoScreen(                                   // Отображение InfoScreen
-                    state = state,
-                    onBackClick = {
-                        navController.popBackStack()          // Возврат на предыдущий экран
-                    }
+                InfoScreen(
+                    state = state
                 )
             }
         }

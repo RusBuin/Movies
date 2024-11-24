@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.loc.newsapp.domain.model.Movie
-import com.loc.newsapp.domain.usecases.news.DeleteItem
-import com.loc.newsapp.domain.usecases.news.GetSavedMovie
-import com.loc.newsapp.domain.usecases.news.UpsertItem
+import com.loc.newsapp.domain.usecases.movies.DeleteItem
+import com.loc.newsapp.domain.usecases.movies.GetSavedMovie
+import com.loc.newsapp.domain.usecases.movies.UpsertItem
 import com.loc.newsapp.util.UIComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

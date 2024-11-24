@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
                         darkIcons = !isSystemInDarkMode
                     )
                 }
-                //Add fillMaxSize()
                 Box(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
                     NavGraph(startDestination = viewModel.startDestination.value)
                 }

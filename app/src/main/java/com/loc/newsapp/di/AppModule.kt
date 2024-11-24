@@ -12,8 +12,8 @@ import com.loc.newsapp.domain.repository.MovieRepository
 import com.loc.newsapp.domain.usecases.app_entry.AppEntryUseCases
 import com.loc.newsapp.domain.usecases.app_entry.ReadAppEntry
 import com.loc.newsapp.domain.usecases.app_entry.SaveAppEntry
-import com.loc.newsapp.domain.usecases.news.GetMovie
-import com.loc.newsapp.domain.usecases.news.MovieUseCases
+import com.loc.newsapp.domain.usecases.movies.GetMovie
+import com.loc.newsapp.domain.usecases.movies.MovieUseCases
 import com.loc.newsapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -80,7 +80,7 @@ object AppModule {
         return Room.databaseBuilder(
             context = application,
             klass = MovieDatabase::class.java,
-            name = "news_db"
+            name = "movie_db"
         )
             .fallbackToDestructiveMigration()
             .build()

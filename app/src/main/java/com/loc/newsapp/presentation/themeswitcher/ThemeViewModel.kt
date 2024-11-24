@@ -18,6 +18,5 @@ class ThemeViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun applyTheme(themeOption: ThemeOption) {
-        // Здесь можно добавить логику сохранения темы (например, через SharedPreferences).
     }
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.loc.newsapp.ui.theme.WhiteGray
 
 @Composable
-fun NewsButton(
+fun MovieButton(
     text: String,
     onClick: () -> Unit,
 ) {
@@ -35,7 +35,7 @@ fun NewsButton(
 }
 
 @Composable
-fun NewsTextButton(
+fun MovieTextButton(
     text: String,
     onClick: () -> Unit,
 ) {

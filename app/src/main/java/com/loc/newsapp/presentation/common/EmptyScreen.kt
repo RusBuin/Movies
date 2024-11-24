@@ -45,7 +45,7 @@ fun EmptyScreen(error: LoadState.Error? = null) {
     }
 
     if (error == null){
-        message = "You have not saved news so far !"
+        message = "You have not saved movies so far !"
         icon = R.drawable.ic_search_document
     }
 
