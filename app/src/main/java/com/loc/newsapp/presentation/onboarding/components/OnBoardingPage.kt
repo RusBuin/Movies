@@ -53,20 +53,20 @@ fun OnBoardingPage(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun OnBoardingPagePreview() {
-    NewsAppTheme {
-        OnBoardingPage(
-            page = Page(
-            title = "Lorem Ipsum is simply dummy",
-            description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-            image = R.drawable.onboarding1
-        )
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Preview(uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun OnBoardingPagePreview() {
+//    NewsAppTheme {
+//        OnBoardingPage(
+//            page = Page(
+//            title = "Lorem Ipsum is simply dummy",
+//            description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//            image = R.drawable.onboarding1
+//        )
+//        )
+//    }
+//}
 
 
 

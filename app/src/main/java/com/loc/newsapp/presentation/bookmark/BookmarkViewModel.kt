@@ -25,7 +25,6 @@ class BookmarkViewModel @Inject constructor(
 
     private fun getMovie() {
         getSavedItems().onEach { items ->
-            // Логирование количества элементов
             println("BookmarkViewModel: Received ${items.size} items.")
             _state.value = _state.value.copy(movie = items)
         }.launchIn(viewModelScope)

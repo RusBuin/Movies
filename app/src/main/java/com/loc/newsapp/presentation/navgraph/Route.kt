@@ -19,5 +19,11 @@ sealed class Route(
     object NewsNavigation : Route(route = "newsNavigation")
 
     object NewsNavigatorScreen : Route(route = "newsNavigator")
+
+
+    object ThemeScreen : Route(route = "themeScreen")
+
+    object InfoScreen : Route(route = "infoScreen")
+
 }
 

@@ -48,9 +48,8 @@ fun MovieCard(
 ) {
     val context = LocalContext.current
 
-    // Добавляем базовый путь к постеру
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
-    Log.d("MovieCard", "Full Image URL: $imageUrl") // Логируем полный URL
+    Log.d("MovieCard", "Full Image URL: $imageUrl")
 
     Row(
         modifier = modifier.clickable { onClick?.invoke() },

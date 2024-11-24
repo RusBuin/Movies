@@ -33,9 +33,13 @@ import com.loc.newsapp.presentation.details.DetailsScreen
 import com.loc.newsapp.presentation.details.DetailsViewModel
 import com.loc.newsapp.presentation.home.HomeScreen
 import com.loc.newsapp.presentation.home.HomeViewModel
+import com.loc.newsapp.presentation.info.InfoScreen
+import com.loc.newsapp.presentation.info.InfoViewModel
 import com.loc.newsapp.presentation.navgraph.Route
 import com.loc.newsapp.presentation.news_navigator.components.BottomNavigationItem
 import com.loc.newsapp.presentation.news_navigator.components.NewsBottomNavigation
+import com.loc.newsapp.presentation.theme.ThemeScreen
+import com.loc.newsapp.presentation.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +49,9 @@ fun NewsNavigator() {
         listOf(
             BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
             BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "Bookmark"),
-        )
+            BottomNavigationItem(icon = R.drawable.mode, text = "Mood"),
+            BottomNavigationItem(icon = R.drawable.information, text = "Info"),
+            )
     }
 
     val navController = rememberNavController()
@@ -56,13 +62,17 @@ fun NewsNavigator() {
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.BookmarkScreen.route -> 1
+        Route.ThemeScreen.route -> 2
+        Route.InfoScreen.route -> 3
         else -> 0
     }
 
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.BookmarkScreen.route
+                backStackState?.destination?.route == Route.BookmarkScreen.route ||
+                backStackState?.destination?.route == Route.ThemeScreen.route ||
+                backStackState?.destination?.route == Route.InfoScreen.route
     }
 
 
@@ -82,6 +92,15 @@ fun NewsNavigator() {
                             navController = navController,
                             route = Route.BookmarkScreen.route
                         )
+                        2 -> navigateToTab(
+                            navController = navController,
+                            route = Route.ThemeScreen.route
+                        )
+                        3 -> navigateToTab(
+                            navController = navController,
+                            route = Route.InfoScreen.route
+                        )
+
                     }
                 }
             )
@@ -129,6 +148,30 @@ fun NewsNavigator() {
                             navController = navController,
                             movie = movie
                         )
+                    }
+                )
+            }
+            composable(route = Route.ThemeScreen.route) {
+                val viewModel: ThemeViewModel = hiltViewModel()
+                val state = viewModel.state.value
+
+                ThemeScreen(
+                    state = state,
+                    onThemeSelected = { themeOption ->
+                        viewModel.selectTheme(themeOption)
+                    }
+                )
+            }
+
+            composable(route = Route.InfoScreen.route) {
+                val viewModel: InfoViewModel = hiltViewModel() // Получаем ViewModel через Hilt
+                val state = viewModel.state.value             // Получаем текущее состояние
+                OnBackClickStateSaver(navController = navController) // Обработка состояния кнопки "Назад"
+
+                InfoScreen(                                   // Отображение InfoScreen
+                    state = state,
+                    onBackClick = {
+                        navController.popBackStack()          // Возврат на предыдущий экран
                     }
                 )
             }

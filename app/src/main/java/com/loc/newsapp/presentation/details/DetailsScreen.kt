@@ -39,9 +39,8 @@ fun DetailsScreen(
 ) {
     val context = LocalContext.current
 
-    // Добавляем базовый путь к постеру
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
-    Log.d("DetailsScreen", "Full Image URL: $imageUrl") // Логируем полный URL
+    Log.d("DetailsScreen", "Full Image URL: $imageUrl")
 
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DetailsTopBar(
@@ -81,6 +80,27 @@ fun DetailsScreen(
                 Text(
                     text = movie.overview,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(
+                        id = R.color.body
+                    )
+                )
+                Text(
+                    text = movie.originalLanguage,
+                    style = MaterialTheme.typography.displayMedium,
+                    color = colorResource(
+                        id = R.color.body
+                    )
+                )
+                Text(
+                    text = movie.releaseDate,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = colorResource(
+                        id = R.color.body
+                    )
+                )
+                Text(
+                    text = movie.voteAverage.toString(),
+                    style = MaterialTheme.typography.labelMedium,
                     color = colorResource(
                         id = R.color.body
                     )

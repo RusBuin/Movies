@@ -74,14 +74,14 @@ data class BottomNavigationItem(
     val text: String
 )
 
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun NewsBottomNavigationPreview() {
-    NewsAppTheme(dynamicColor = false) {
-        NewsBottomNavigation(items = listOf(
-            BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "Bookmark"),
-        ), selectedItem = 0, onItemClick = {})
-    }
-}
+//@Preview
+//@Preview(uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun NewsBottomNavigationPreview() {
+//    NewsAppTheme(dynamicColor = false) {
+//        NewsBottomNavigation(items = listOf(
+//            BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
+//            BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "Bookmark"),
+//        ), selectedItem = 0, onItemClick = {})
+//    }
+//}

@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -23,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
-
+    var darkMode by mutableStateOf(true)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -31,7 +34,7 @@ class MainActivity : ComponentActivity() {
             setKeepOnScreenCondition(condition = { viewModel.splashCondition.value })
         }
         setContent {
-            NewsAppTheme(dynamicColor = false) {
+            NewsAppTheme(darkTheme = darkMode,dynamicColor = false) {
                 val isSystemInDarkMode = isSystemInDarkTheme()
                 val systemUiColor = rememberSystemUiController()
                 SideEffect {
