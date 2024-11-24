@@ -46,7 +46,7 @@ fun DetailsScreen(
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DetailsTopBar(
             onBookMarkClick = {
-                event(DetailsEvent.SaveArticle)
+                event(DetailsEvent.UpsertDeleteItem(movie))
             },
             onBackClick = navigateUp
         )

@@ -3,8 +3,9 @@ package com.loc.newsapp.domain.usecases.news
 import com.loc.newsapp.data.local.MovieDao
 import com.loc.newsapp.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetItems(
+class GetItems @Inject constructor(
     private val movieDao: MovieDao
 ) {
 

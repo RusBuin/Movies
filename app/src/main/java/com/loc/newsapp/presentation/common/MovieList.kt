@@ -18,8 +18,33 @@ import com.loc.newsapp.presentation.home.components.MovieCard
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
+    movie: List<Movie>,
+    onClick: (Movie) -> Unit
+) {
+    if (movie.isEmpty()){
+        EmptyScreen()
+    }
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+        contentPadding = PaddingValues(all = ExtraSmallPadding2)
+    ) {
+        items(
+            count = movie.size,
+        ) {
+            movie[it]?.let { movie ->
+                MovieCard(movie = movie, onClick = { onClick(movie) })
+            }
+        }
+    }
+
+}
+
+@Composable
+fun MovieList(
+    modifier: Modifier = Modifier,
     movie: LazyPagingItems<Movie>,
-    onClick:(Movie) -> Unit
+    onClick: (Movie) -> Unit
 ) {
 
     val handlePagingResult = handlePagingResult(movie)
@@ -35,12 +60,13 @@ fun MovieList(
                 count = movie.itemCount,
             ) {
                 movie[it]?.let { movie ->
-                    MovieCard(movie=movie, onClick = {onClick(movie)})
+                    MovieCard(movie = movie, onClick = { onClick(movie) })
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun handlePagingResult(movie: LazyPagingItems<Movie>): Boolean {
