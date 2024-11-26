@@ -23,28 +23,29 @@ class HomeViewModel @Inject constructor(
     private val deleteItemsUseCase: DeleteItem,
     private val upsertItemsUseCase: UpsertItem,
     private val getSavedItemUseCase: GetSavedMovie
-): ViewModel() {
+) : ViewModel() {
 
     var state = mutableStateOf(HomeState())
         private set
 
-    val news = movieUseCases.getMovie(
-    ).cachedIn(viewModelScope)
+    val news = movieUseCases.getMovie().cachedIn(viewModelScope)
+
     var sideEffect by mutableStateOf<UIComponent?>(null)
         private set
-    fun onEvent (event: DetailsEvent){
+
+    fun onEvent(event: DetailsEvent) {
         when (event) {
-            is DetailsEvent.UpsertDeleteItem ->{
+            is DetailsEvent.UpsertDeleteItem -> {
                 viewModelScope.launch {
-                    val movie = getSavedItemUseCase(id=event.movie.id)
-                    if (movie == null){
-                        upsertItems(event.movie)
-                    }else{
-                        deleteItems(event.movie)
+                    val movie = getSavedItemUseCase(id = event.movie.id)
+                    if (movie == null) {
+                        upsertItems(event.movie) // Если фильма нет в избранном, добавляем его
+                    } else {
+                        deleteItems(event.movie) // Если фильм уже в избранном, удаляем его
                     }
                 }
             }
-            is DetailsEvent.RemoveSideEffect ->{
+            is DetailsEvent.RemoveSideEffect -> {
                 sideEffect = null
             }
         }
@@ -52,13 +53,11 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun upsertItems(movie: Movie) {
         upsertItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Removed from favorites")
+        sideEffect = UIComponent.Toast("Added to favorites") // Исправлен текст уведомления
     }
 
     private suspend fun deleteItems(movie: Movie) {
         deleteItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Added to favorites")
-
+        sideEffect = UIComponent.Toast("Removed from favorites") // Исправлен текст уведомления
     }
-
 }

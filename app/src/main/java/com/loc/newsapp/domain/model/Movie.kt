@@ -16,5 +16,6 @@ data class Movie(
     val overview: String,
     @SerializedName("release_date") val releaseDate: String,
     @SerializedName("vote_average") val voteAverage: Double,
-    @SerializedName("original_language") val originalLanguage: String
+    @SerializedName("original_language") val originalLanguage: String,
+    var isBookmarked: Boolean = false
 ): Parcelable

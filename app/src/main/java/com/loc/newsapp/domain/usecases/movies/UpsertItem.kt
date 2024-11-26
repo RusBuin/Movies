@@ -8,8 +8,9 @@ class UpsertItem @Inject constructor(
     private val movieDao: MovieDao
 ) {
 
-    suspend operator fun invoke(movie: Movie){
-        movieDao.upsert(movie = movie)
+    suspend operator fun invoke(movie: Movie) {
+        // Устанавливаем флаг isBookmarked в true, так как фильм добавляется в закладки
+        val updatedMovie = movie.copy(isBookmarked = true)
+        movieDao.upsert(movie = updatedMovie)
     }
-
 }

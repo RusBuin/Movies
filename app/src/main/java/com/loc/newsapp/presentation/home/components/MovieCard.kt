@@ -40,6 +40,10 @@ import com.loc.newsapp.ui.theme.NewsAppTheme
 
 import android.util.Log // добавляем импорт для логирования
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -47,16 +51,28 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
     onClick: (() -> Unit)? = null,
-    onBookMarkClick: () -> Unit
+    onBookMarkClick: (Boolean) -> Unit // Передаем новое состояние закладки
 ) {
     val context = LocalContext.current
 
+    // Формируем полный URL для изображения
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
     Log.d("MovieCard", "Full Image URL: $imageUrl")
+
+    // Локальное состояние для управления закладкой
+    var isBookmarked by remember { mutableStateOf(movie.isBookmarked) }
+
+    // Определяем иконку в зависимости от состояния закладки
+    val bookmarkIcon = if (isBookmarked) {
+        R.drawable.ic_close // Иконка для фильма в закладках
+    } else {
+        R.drawable.ic_bookmark // Иконка для фильма не в закладках
+    }
 
     Row(
         modifier = modifier.clickable { onClick?.invoke() },
     ) {
+        // Загружаем изображение фильма
         AsyncImage(
             modifier = Modifier
                 .size(ArticleCardSize)
@@ -65,11 +81,14 @@ fun MovieCard(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
+
+        // Заголовок фильма
         Column(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .padding(horizontal = ExtraSmallPadding)
                 .height(ArticleCardSize)
+                .weight(1f)
         ) {
             Text(
                 text = movie.title,
@@ -78,11 +97,19 @@ fun MovieCard(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
         }
-        IconButton(onClick = onBookMarkClick) {
+
+        // Кнопка для добавления в закладки
+        IconButton(
+            onClick = {
+                // Инвертируем состояние закладки
+                isBookmarked = !isBookmarked
+                // Передаем новое состояние закладки в обработчик
+                onBookMarkClick(isBookmarked)
+            }
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_bookmark),
+                painter = painterResource(id = bookmarkIcon),
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
             )

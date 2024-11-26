@@ -8,8 +8,8 @@ class DeleteItem @Inject constructor(
     private val movieDao: MovieDao
 ) {
 
-    suspend operator fun invoke(movie: Movie){
-        movieDao.delete(movie = movie)
+    suspend operator fun invoke(movie: Movie) {
+        val updatedMovie = movie.copy(isBookmarked = false)
+        movieDao.upsert(movie = updatedMovie)
     }
-
 }
