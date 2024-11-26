@@ -22,13 +22,15 @@ import androidx.paging.compose.LazyPagingItems
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
+import com.loc.newsapp.presentation.details.DetailsEvent
 import com.loc.newsapp.presentation.home.components.MovieCard
 
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
     movie: List<Movie>,
-    onClick: (Movie) -> Unit
+    onClick: (Movie) -> Unit,
+    event: (DetailsEvent) -> Unit
 ) {
     val isWaiting = remember { mutableStateOf(false) }
 
@@ -51,6 +53,9 @@ fun MovieList(
                                 onClick(it)
                             },80)
                         },
+                        onBookMarkClick = {
+                            event(DetailsEvent.UpsertDeleteItem(item))
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = MediumPadding1)
@@ -65,7 +70,8 @@ fun MovieList(
 fun MovieList(
     modifier: Modifier = Modifier,
     movie: LazyPagingItems<Movie>,
-    onClick: (Movie) -> Unit
+    onClick: (Movie) -> Unit,
+    event: (DetailsEvent) -> Unit
 ) {
     val isWaiting = remember { mutableStateOf(false) }
     val handlePagingResult = handlePagingResult(movie)
@@ -86,6 +92,9 @@ fun MovieList(
                                 isWaiting.value = false
                                 onClick(item)
                             }, 80)
+                        },
+                        onBookMarkClick = {
+                            event(DetailsEvent.UpsertDeleteItem(item))
                         },
                         modifier = Modifier
                             .fillMaxWidth()

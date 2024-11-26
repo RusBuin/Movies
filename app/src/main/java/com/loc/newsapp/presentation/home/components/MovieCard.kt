@@ -39,12 +39,15 @@ import com.loc.newsapp.ui.theme.NewsAppTheme
 
 
 import android.util.Log // добавляем импорт для логирования
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun MovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    onBookMarkClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -74,6 +77,14 @@ fun MovieCard(
                 color = colorResource(id = R.color.text_title),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
+            )
+
+        }
+        IconButton(onClick = onBookMarkClick) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_bookmark),
+                contentDescription = null,
+                modifier = Modifier.size(30.dp),
             )
         }
     }

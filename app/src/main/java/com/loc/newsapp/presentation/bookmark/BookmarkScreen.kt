@@ -17,13 +17,14 @@ import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.common.MovieList
+import com.loc.newsapp.presentation.details.DetailsEvent
 
 
 @Composable
 fun BookmarkScreen(
     state: BookmarkState,
-    navigateToDetails: (Movie) -> Unit
-) {
+    navigateToDetails: (Movie) -> Unit,
+    event: (DetailsEvent) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,7 +44,8 @@ fun BookmarkScreen(
 
         MovieList(
             movie = state.movie,
-            onClick = navigateToDetails
+            onClick = navigateToDetails,
+            event = event
         )
     }
 }

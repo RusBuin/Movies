@@ -26,13 +26,15 @@ import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.common.MovieList
+import com.loc.newsapp.presentation.details.DetailsEvent
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     movie: LazyPagingItems<Movie>,
-    navigateToDetails: (Movie) -> Unit
+    navigateToDetails: (Movie) -> Unit,
+    event: (DetailsEvent) -> Unit
 ) {
 
     val titles by remember {
@@ -78,7 +80,8 @@ fun HomeScreen(
         MovieList(
             modifier = Modifier.padding(horizontal = MediumPadding1),
             movie = movie,
-            onClick = navigateToDetails
+            onClick = navigateToDetails,
+            event = event
         )
     }
 }

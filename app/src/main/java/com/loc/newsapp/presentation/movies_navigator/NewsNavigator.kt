@@ -116,7 +116,8 @@ fun NewsNavigator() {
                             navController = navController,
                             movie = movie
                         )
-                    }
+                    },
+                    event = viewModel::onEvent
                 )
             }
             composable(route = Route.DetailsScreen.route) {
@@ -142,7 +143,8 @@ fun NewsNavigator() {
                             navController = navController,
                             movie = movie
                         )
-                    }
+                    },
+                    event = viewModel::onEvent // Передаем функцию обработчика событий
                 )
             }
             composable(route = Route.ThemeScreen.route) {
