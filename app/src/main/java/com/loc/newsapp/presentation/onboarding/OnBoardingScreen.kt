@@ -12,12 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.loc.newsapp.presentation.Dimens.MediumPadding2
 import com.loc.newsapp.presentation.common.MovieButton
@@ -26,12 +31,24 @@ import com.loc.newsapp.presentation.onboarding.components.OnBoardingPage
 import com.loc.newsapp.presentation.onboarding.components.PagerIndicator
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingScreen(
     onEvent: (OnBoardingEvent) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Welcome to NewsApp",
+                    color = Color.White
+                )
+            },
+            colors = androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = Color.Black
+            )
+        )
+
         val pagerState = rememberPagerState(initialPage = 0) {
             pages.size
         }
@@ -45,10 +62,13 @@ fun OnBoardingScreen(
                 }
             }
         }
+
         HorizontalPager(state = pagerState) { index ->
             OnBoardingPage(page = pages[index])
         }
+
         Spacer(modifier = Modifier.weight(1f))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -74,7 +94,6 @@ fun OnBoardingScreen(
                                     page = pagerState.currentPage - 1
                                 )
                             }
-
                         }
                     )
                 }
@@ -96,4 +115,13 @@ fun OnBoardingScreen(
         }
         Spacer(modifier = Modifier.weight(0.5f))
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun OnBoardingScreenPreview() {
+    OnBoardingScreen(
+        onEvent = {  }
+    )
 }
