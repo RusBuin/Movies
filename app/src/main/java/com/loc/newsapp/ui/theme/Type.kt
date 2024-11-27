@@ -17,7 +17,9 @@ val Poppins = FontFamily(
     )
 )
 
-
+// Set of Material typography styles to start with
+// body is "Text" in the Figma Design
+// label small is xsmall in Figma Design
 val Typography = Typography(
     displaySmall = TextStyle(
         fontSize = 24.sp,
@@ -50,4 +52,4 @@ val Typography = Typography(
         lineHeight = 19.sp,
     ),
 
-)
+    )

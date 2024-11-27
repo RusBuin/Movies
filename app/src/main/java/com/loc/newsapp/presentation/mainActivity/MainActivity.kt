@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
-    var darkMode by mutableStateOf(true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             setKeepOnScreenCondition(condition = { viewModel.splashCondition.value })
         }
         setContent {
-            NewsAppTheme(darkTheme = darkMode,dynamicColor = false) {
+            NewsAppTheme(dynamicColor = false) {
                 val isSystemInDarkMode = isSystemInDarkTheme()
                 val systemUiColor = rememberSystemUiController()
                 SideEffect {
