@@ -11,34 +11,54 @@ import com.loc.newsapp.domain.usecases.movies.GetSavedMovie
 import com.loc.newsapp.domain.usecases.movies.UpsertItem
 import com.loc.newsapp.util.UIComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-
     private val deleteItemsUseCase: DeleteItem,
     private val upsertItemsUseCase: UpsertItem,
     private val getSavedItemUseCase: GetSavedMovie
-)
-    : ViewModel() {
+) : ViewModel() {
 
+    // Состояние для отслеживания закладок
+    var isBookmarked by mutableStateOf(false)
+        private set
+
+    // Для отображения временных уведомлений, таких как Toast
     var sideEffect by mutableStateOf<UIComponent?>(null)
         private set
 
-    fun onEvent (event: DetailsEvent){
+    // Функция для проверки, является ли фильм закладкой
+    fun isMovieBookmarked(movie: Movie) {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Проверяем, есть ли фильм в закладках
+            isBookmarked = getSavedItemUseCase(movie.id) != null
+        }
+    }
+
+    // Обработка событий, таких как добавление или удаление из закладок
+    fun onEvent(event: DetailsEvent) {
         when (event) {
-            is DetailsEvent.UpsertDeleteItem ->{
-                viewModelScope.launch {
-                    val movie = getSavedItemUseCase(id=event.movie.id)
-                    if (movie == null){
+            is DetailsEvent.UpsertDeleteItem -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    // Проверяем, есть ли фильм в закладках
+                    val movie = getSavedItemUseCase(event.movie.id)
+                    if (movie == null) {
+                        // Если фильма нет, добавляем его
                         upsertItems(event.movie)
-                    }else{
+                        isBookmarked = true
+                        sideEffect = UIComponent.Toast("Added to favorites")
+                    } else {
+                        // Если фильм уже в закладках, удаляем его
                         deleteItems(event.movie)
+                        isBookmarked = false
+                        sideEffect = UIComponent.Toast("Removed from favorites")
                     }
                 }
             }
-            is DetailsEvent.RemoveSideEffect ->{
+            is DetailsEvent.RemoveSideEffect -> {
                 sideEffect = null
             }
         }
@@ -46,12 +66,9 @@ class DetailsViewModel @Inject constructor(
 
     private suspend fun upsertItems(movie: Movie) {
         upsertItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Removed from favorites")
     }
 
     private suspend fun deleteItems(movie: Movie) {
         deleteItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Added to favorites")
-
     }
 }

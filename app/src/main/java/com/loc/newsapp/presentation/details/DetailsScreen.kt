@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.loc.newsapp.R
@@ -35,15 +37,19 @@ import com.loc.newsapp.ui.theme.NewsAppTheme
 fun DetailsScreen(
     movie: Movie,
     event: (DetailsEvent) -> Unit,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    detailsViewModel: DetailsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
     Log.d("DetailsScreen", "Full Image URL: $imageUrl")
-
+    LaunchedEffect(movie.id) {
+        detailsViewModel.isMovieBookmarked(movie)
+    }
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DetailsTopBar(
+            movie = movie,
             onBookMarkClick = {
                 event(DetailsEvent.UpsertDeleteItem(movie))
             },

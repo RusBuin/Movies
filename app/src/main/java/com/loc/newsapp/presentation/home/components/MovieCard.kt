@@ -70,6 +70,7 @@ fun MovieCard(
             modifier = Modifier
                 .padding(horizontal = ExtraSmallPadding)
                 .height(ArticleCardSize)
+                .weight(1f)
         ) {
             Text(
                 text = movie.title,
