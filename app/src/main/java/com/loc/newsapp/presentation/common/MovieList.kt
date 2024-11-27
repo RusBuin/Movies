@@ -23,8 +23,6 @@ import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.details.DetailsEvent
-import com.loc.newsapp.presentation.home.components.MovieCard
-
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
@@ -54,7 +52,7 @@ fun MovieList(
                             },80)
                         },
                         onBookMarkClick = {
-                            event(DetailsEvent.UpsertDeleteItem(item))
+                            event(DetailsEvent.UpsertDeleteItem(it))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -105,6 +103,7 @@ fun MovieList(
         }
     }
 }
+
 
 @Composable
 fun handlePagingResult(movie: LazyPagingItems<Movie>): Boolean {

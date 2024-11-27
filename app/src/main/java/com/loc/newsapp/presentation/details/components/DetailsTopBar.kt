@@ -2,6 +2,7 @@ package com.loc.newsapp.presentation.details.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
@@ -56,7 +58,8 @@ fun DetailsTopBar(
                 Icon(
                     painter = painterResource(if (detailsViewModel.isBookmarked) R.drawable.ic_close
                     else R.drawable.ic_bookmark),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
                 )
             }
 

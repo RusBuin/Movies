@@ -14,6 +14,7 @@ import com.loc.newsapp.domain.usecases.movies.UpsertItem
 import com.loc.newsapp.presentation.details.DetailsEvent
 import com.loc.newsapp.util.UIComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +28,7 @@ class HomeViewModel @Inject constructor(
 
     var state = mutableStateOf(HomeState())
         private set
+    
 
     val news = movieUseCases.getMovie(
     ).cachedIn(viewModelScope)
@@ -52,13 +54,10 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun upsertItems(movie: Movie) {
         upsertItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Removed from favorites")
     }
 
     private suspend fun deleteItems(movie: Movie) {
         deleteItemsUseCase(movie)
-        sideEffect = UIComponent.Toast("Added to favorites")
-
     }
 
 }

@@ -37,16 +37,12 @@ import com.loc.newsapp.ui.theme.NewsAppTheme
 fun DetailsScreen(
     movie: Movie,
     event: (DetailsEvent) -> Unit,
-    navigateUp: () -> Unit,
-    detailsViewModel: DetailsViewModel = hiltViewModel()
-) {
+    navigateUp: () -> Unit) {
     val context = LocalContext.current
 
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
     Log.d("DetailsScreen", "Full Image URL: $imageUrl")
-    LaunchedEffect(movie.id) {
-        detailsViewModel.isMovieBookmarked(movie)
-    }
+
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DetailsTopBar(
             movie = movie,

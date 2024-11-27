@@ -1,6 +1,6 @@
-package com.loc.newsapp.presentation.home.components
 
 
+package com.loc.newsapp.presentation.common
 
 import com.loc.newsapp.R
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -38,22 +38,32 @@ import com.loc.newsapp.presentation.Dimens.SmallIconSize
 import com.loc.newsapp.ui.theme.NewsAppTheme
 
 
-import android.util.Log // добавляем импорт для логирования
+import android.util.Log
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.loc.newsapp.presentation.details.DetailsViewModel
 
 @Composable
 fun MovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
     onClick: (() -> Unit)? = null,
-    onBookMarkClick: () -> Unit
+    onBookMarkClick: () -> Unit,
+    detailsViewModel: DetailsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
+    LaunchedEffect(Unit){
+        detailsViewModel.isMovieBookmarked(movie)
+    }
+
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
     Log.d("MovieCard", "Full Image URL: $imageUrl")
-
+    LaunchedEffect(Unit){
+        detailsViewModel.isMovieBookmarked(movie)
+    }
     Row(
         modifier = modifier.clickable { onClick?.invoke() },
     ) {
@@ -83,7 +93,8 @@ fun MovieCard(
         }
         IconButton(onClick = onBookMarkClick) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_bookmark),
+                painter = painterResource(if (detailsViewModel.isBookmarked) R.drawable.ic_close
+                else R.drawable.ic_bookmark),
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
             )

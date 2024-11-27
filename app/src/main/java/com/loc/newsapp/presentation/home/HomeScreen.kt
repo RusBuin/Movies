@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,12 +22,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.common.MovieList
 import com.loc.newsapp.presentation.details.DetailsEvent
+import com.loc.newsapp.presentation.details.DetailsViewModel
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -34,8 +37,8 @@ import com.loc.newsapp.presentation.details.DetailsEvent
 fun HomeScreen(
     movie: LazyPagingItems<Movie>,
     navigateToDetails: (Movie) -> Unit,
-    event: (DetailsEvent) -> Unit
-) {
+    event: (DetailsEvent) -> Unit) {
+
 
     val titles by remember {
         derivedStateOf {
