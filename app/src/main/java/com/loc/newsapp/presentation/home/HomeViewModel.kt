@@ -25,28 +25,39 @@ class HomeViewModel @Inject constructor(
     private val upsertItemsUseCase: UpsertItem,
     private val getSavedItemUseCase: GetSavedMovie
 ): ViewModel() {
-
+    val news = movieUseCases.getMovie()
     var state = mutableStateOf(HomeState())
         private set
-    
-
-    val news = movieUseCases.getMovie(
-    ).cachedIn(viewModelScope)
     var sideEffect by mutableStateOf<UIComponent?>(null)
         private set
-    fun onEvent (event: DetailsEvent){
+
+    // Используем Map<String, Boolean> для отслеживания закладки каждого фильма
+    private val _bookmarkedMovies = mutableStateOf<Map<String, Boolean>>(emptyMap())
+    val bookmarkedMovies: Map<String, Boolean> get() = _bookmarkedMovies.value
+
+    fun isMovieBookmarked(movie: Movie) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val movieBookmarked = getSavedItemUseCase(movie.id) != null
+            // Обновляем состояние закладки для конкретного фильма
+            _bookmarkedMovies.value = _bookmarkedMovies.value + (movie.id.toString() to movieBookmarked)
+        }
+    }
+
+    fun onEvent(event: DetailsEvent) {
         when (event) {
-            is DetailsEvent.UpsertDeleteItem ->{
-                viewModelScope.launch {
-                    val movie = getSavedItemUseCase(id=event.movie.id)
-                    if (movie == null){
+            is DetailsEvent.UpsertDeleteItem -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val movie = getSavedItemUseCase(event.movie.id)
+                    if (movie == null) {
                         upsertItems(event.movie)
-                    }else{
+                        updateBookmarkStatus(event.movie.id.toString(), true)
+                    } else {
                         deleteItems(event.movie)
+                        updateBookmarkStatus(event.movie.id.toString(), false)
                     }
                 }
             }
-            is DetailsEvent.RemoveSideEffect ->{
+            is DetailsEvent.RemoveSideEffect -> {
                 sideEffect = null
             }
         }
@@ -60,4 +71,8 @@ class HomeViewModel @Inject constructor(
         deleteItemsUseCase(movie)
     }
 
+    private fun updateBookmarkStatus(movieId: String, isBookmarked: Boolean) {
+        _bookmarkedMovies.value = _bookmarkedMovies.value + (movieId to isBookmarked)
+    }
 }
+

@@ -44,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.loc.newsapp.presentation.details.DetailsViewModel
+import com.loc.newsapp.presentation.home.HomeViewModel
 
 @Composable
 fun MovieCard(
@@ -51,19 +52,20 @@ fun MovieCard(
     movie: Movie,
     onClick: (() -> Unit)? = null,
     onBookMarkClick: () -> Unit,
-    detailsViewModel: DetailsViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit){
-        detailsViewModel.isMovieBookmarked(movie)
+    // Получаем состояние закладки для конкретного фильма
+    val isBookmarked = homeViewModel.bookmarkedMovies[movie.id.toString()] ?: false
+
+    LaunchedEffect(Unit) {
+        homeViewModel.isMovieBookmarked(movie)
     }
 
     val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
     Log.d("MovieCard", "Full Image URL: $imageUrl")
-    LaunchedEffect(Unit){
-        detailsViewModel.isMovieBookmarked(movie)
-    }
+
     Row(
         modifier = modifier.clickable { onClick?.invoke() },
     ) {
@@ -89,11 +91,10 @@ fun MovieCard(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
         }
         IconButton(onClick = onBookMarkClick) {
             Icon(
-                painter = painterResource(if (detailsViewModel.isBookmarked) R.drawable.ic_close
+                painter = painterResource(if (isBookmarked) R.drawable.ic_close
                 else R.drawable.ic_bookmark),
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
@@ -101,3 +102,4 @@ fun MovieCard(
         }
     }
 }
+
