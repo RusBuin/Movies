@@ -34,7 +34,7 @@ class MovieRepositoryImpl(
     }
 
     override fun getItems(): Flow<List<Movie>> {
-        return movieDao.getItems()
+        return movieDao.getMovies()
     }
 
 

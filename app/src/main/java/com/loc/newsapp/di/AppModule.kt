@@ -9,12 +9,11 @@ import com.loc.newsapp.data.remote.MovieApi
 import com.loc.newsapp.data.repository.MovieRepositoryImpl
 import com.loc.newsapp.domain.manger.LocalUserManger
 import com.loc.newsapp.domain.repository.MovieRepository
-import com.loc.newsapp.domain.usecases.app_entry.AppEntryUseCases
-import com.loc.newsapp.domain.usecases.app_entry.ReadAppEntry
-import com.loc.newsapp.domain.usecases.app_entry.SaveAppEntry
+
 import com.loc.newsapp.domain.usecases.movies.GetMovie
 import com.loc.newsapp.domain.usecases.movies.MovieUseCases
 import com.loc.newsapp.util.Constants.BASE_URL
+import com.loc.newsapp.util.Constants.MOVIES_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,14 +32,6 @@ object AppModule {
         application: Application
     ): LocalUserManger = LocalUserMangerImpl(context = application)
 
-    @Provides
-    @Singleton
-    fun provideAppEntryUseCases(
-        localUserManger: LocalUserManger
-    ): AppEntryUseCases = AppEntryUseCases(
-        readAppEntry = ReadAppEntry(localUserManger),
-        saveAppEntry = SaveAppEntry(localUserManger)
-    )
 
     @Provides
     @Singleton
@@ -80,7 +71,7 @@ object AppModule {
         return Room.databaseBuilder(
             context = application,
             klass = MovieDatabase::class.java,
-            name = "movie_db"
+            name = MOVIES_DATABASE_NAME
         )
             .fallbackToDestructiveMigration()
             .build()

@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.loc.newsapp.presentation.movies_navigator.NewsNavigator
-import com.loc.newsapp.presentation.onboarding.OnBoardingScreen
-import com.loc.newsapp.presentation.onboarding.OnBoardingViewModel
+import com.loc.newsapp.presentation.screens.onboarding.OnBoardingScreen
+import com.loc.newsapp.presentation.screens.onboarding.OnBoardingViewModel
 
 @Composable
 fun NavGraph(

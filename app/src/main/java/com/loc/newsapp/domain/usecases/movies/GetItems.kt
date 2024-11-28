@@ -10,7 +10,7 @@ class GetItems @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<List<Movie>>{
-        return movieDao.getItems()
+        return movieDao.getMovies()
     }
 
 }

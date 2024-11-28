@@ -22,7 +22,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
-import com.loc.newsapp.presentation.details.DetailsEvent
+import com.loc.newsapp.presentation.screens.details.DetailsEvent
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
@@ -30,10 +30,12 @@ fun MovieList(
     onClick: (Movie) -> Unit,
     event: (DetailsEvent) -> Unit
 ) {
+
     val isWaiting = remember { mutableStateOf(false) }
 
     if (movie.isEmpty()) {
         EmptyScreen()
+        return
     } else {
         LazyColumn(
             modifier = modifier.fillMaxSize(),

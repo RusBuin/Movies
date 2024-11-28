@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string name="onboarding_screen_title">Welcome to NewsApp</string>
+<string name="icon_home">Home</string>
+<string name="icon_bookmark">Bookmark</string>
+<string name="icon_mood">Mood</string>
+<string name="icon_info">Info</string>
 </resources>

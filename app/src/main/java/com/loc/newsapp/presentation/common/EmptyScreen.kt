@@ -76,7 +76,7 @@ fun EmptyContent(alphaAnim: Float, message: String, iconId: Int) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = null,
-            tint = if (isSystemInDarkTheme()) LightGray else DarkGray,
+            tint = MaterialTheme.colorScheme.surfaceTint,
             modifier = Modifier
                 .size(120.dp)
                 .alpha(alphaAnim)
@@ -87,7 +87,7 @@ fun EmptyContent(alphaAnim: Float, message: String, iconId: Int) {
                 .alpha(alphaAnim),
             text = message,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (isSystemInDarkTheme()) LightGray else DarkGray,
+            color = MaterialTheme.colorScheme.primary,
         )
     }
 }

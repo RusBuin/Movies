@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -21,31 +22,36 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
-import com.loc.newsapp.presentation.bookmark.BookmarkScreen
-import com.loc.newsapp.presentation.bookmark.BookmarkViewModel
-import com.loc.newsapp.presentation.details.DetailsScreen
-import com.loc.newsapp.presentation.details.DetailsViewModel
-import com.loc.newsapp.presentation.home.HomeScreen
-import com.loc.newsapp.presentation.home.HomeViewModel
-import com.loc.newsapp.presentation.info.InfoScreen
-import com.loc.newsapp.presentation.info.InfoViewModel
+import com.loc.newsapp.presentation.screens.details.DetailsScreen
+import com.loc.newsapp.presentation.screens.details.DetailsViewModel
+import com.loc.newsapp.presentation.screens.home.HomeViewModel
+import com.loc.newsapp.presentation.screens.info.InfoScreen
+import com.loc.newsapp.presentation.screens.info.InfoViewModel
 import com.loc.newsapp.presentation.navgraph.Route
 import com.loc.newsapp.presentation.movies_navigator.components.BottomNavigationItem
 import com.loc.newsapp.presentation.movies_navigator.components.NewsBottomNavigation
+import com.loc.newsapp.presentation.screens.bookmark.BookmarkScreen
+import com.loc.newsapp.presentation.screens.bookmark.BookmarkViewModel
+import com.loc.newsapp.presentation.screens.home.HomeScreen
 import com.loc.newsapp.presentation.theme.ThemeScreen
-import com.loc.newsapp.presentation.theme.ThemeViewModel
+import com.loc.newsapp.presentation.screens.themeswitcher.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsNavigator() {
 
+    val homeText = stringResource(R.string.icon_home)
+    val bookmarkText = stringResource(R.string.icon_bookmark)
+    val moodText = stringResource(R.string.icon_mood)
+    val infoText = stringResource(R.string.icon_info)
+
     val bottomNavigationItems = remember {
         listOf(
-            BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "Bookmark"),
-            BottomNavigationItem(icon = R.drawable.mode, text = "Mood"),
-            BottomNavigationItem(icon = R.drawable.information, text = "Info"),
-            )
+            BottomNavigationItem(icon = R.drawable.ic_home, text = homeText),
+            BottomNavigationItem(icon = R.drawable.ic_bookmark, text = bookmarkText),
+            BottomNavigationItem(icon = R.drawable.mode, text = moodText),
+            BottomNavigationItem(icon = R.drawable.information, text = infoText)
+        )
     }
 
     val navController = rememberNavController()
@@ -144,7 +150,7 @@ fun NewsNavigator() {
                             movie = movie
                         )
                     },
-                    event = viewModel::onEvent // Передаем функцию обработчика событий
+                    event = viewModel::onEvent
                 )
             }
             composable(route = Route.ThemeScreen.route) {

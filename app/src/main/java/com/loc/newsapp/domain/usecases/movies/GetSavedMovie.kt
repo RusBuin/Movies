@@ -9,6 +9,6 @@ class GetSavedMovie @Inject constructor(
 
 ) {
     suspend operator fun invoke(id: Int): Movie?{
-        return movieDao.selectItem(id=id)
+        return movieDao.getMovieById(id=id)
     }
 }
