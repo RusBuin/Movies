@@ -19,26 +19,27 @@ class ThemeViewModel @Inject constructor(
     private val localUserManager: LocalUserManger
 ) : ViewModel() {
 
+    // Состояние текущей темы
     private val _currentTheme = MutableStateFlow<ThemeOption>(ThemeOption.SYSTEM_DEFAULT)
-    val currentTheme: StateFlow<ThemeOption> = _currentTheme
+    val currentTheme: StateFlow<ThemeOption> = _currentTheme.asStateFlow()
 
     init {
-        getCurrentTheme()
+        observeThemeChanges()
     }
 
-    private fun getCurrentTheme() {
+    // Подписка на изменения темы
+    private fun observeThemeChanges() {
         viewModelScope.launch {
-            val theme = localUserManager.getTheme()
-            Log.d("ThemeViewModel", "Loading theme: $theme")
-            _currentTheme.emit(theme)
+            localUserManager.readTheme().collect { theme ->
+                _currentTheme.value = theme
+            }
         }
     }
 
+    // Изменение темы
     fun changeTheme(theme: ThemeOption) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             localUserManager.changeTheme(theme)
-            Log.d("ThemeViewModel", "Change theme: $theme")
-            _currentTheme.emit(theme)
         }
     }
 }

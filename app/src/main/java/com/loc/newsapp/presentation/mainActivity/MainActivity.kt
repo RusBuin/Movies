@@ -43,15 +43,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent(mainViewModel: MainViewModel, themeViewModel: ThemeViewModel) {
-    val currentTheme by themeViewModel.currentTheme.collectAsState(initial = ThemeOption.SYSTEM_DEFAULT)
-
-    Log.d("MainActivity", "Current Theme: $currentTheme")
-
+    // Подписка на текущее состояние темы
+    val currentTheme by themeViewModel.currentTheme.collectAsState()
 
     NewsAppTheme(currentTheme = currentTheme) {
         val systemUiController = rememberSystemUiController()
         val isSystemInDarkMode = isSystemInDarkTheme()
 
+        // Настройка цвета статус-бара и навигации
         SideEffect {
             val useDarkIcons = when (currentTheme) {
                 ThemeOption.LIGHT -> true
@@ -64,6 +63,7 @@ fun MainContent(mainViewModel: MainViewModel, themeViewModel: ThemeViewModel) {
             )
         }
 
+        // Отображение основного контента
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)

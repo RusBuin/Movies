@@ -11,5 +11,7 @@ interface LocalUserManger {
 
     fun readAppEntry(): Flow<Boolean>
     suspend fun getTheme() : ThemeOption
-    suspend fun changeTheme(value: ThemeOption) : Preferences
+    suspend fun changeTheme(value: ThemeOption)
+    fun readTheme(): Flow<ThemeOption>
+
 }

@@ -47,13 +47,19 @@ class LocalUserMangerImpl(
             return ThemeOption.values().find { it.name == themeString } ?: ThemeOption.SYSTEM_DEFAULT
     }
 
-    override suspend fun changeTheme(value: ThemeOption): Preferences {
-
-            context.dataStore.edit { preferences ->
-                preferences[themeKey] = value.name
-            }
-            return context.dataStore.data.first()
+    override suspend fun changeTheme(value: ThemeOption) {
+        context.dataStore.edit { preferences ->
+            preferences[themeKey] = value.name
+        }
     }
+
+    override fun readTheme(): Flow<ThemeOption> {
+        return context.dataStore.data.map { preferences ->
+            val themeString = preferences[themeKey] ?: ThemeOption.SYSTEM_DEFAULT.name
+            ThemeOption.values().find { it.name == themeString } ?: ThemeOption.SYSTEM_DEFAULT
+        }
+    }
+
 
 
 
