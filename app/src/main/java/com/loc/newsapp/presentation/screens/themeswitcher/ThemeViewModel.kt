@@ -1,25 +1,44 @@
 package com.loc.newsapp.presentation.screens.themeswitcher
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.loc.newsapp.presentation.theme.ThemeOption
-import com.loc.newsapp.presentation.theme.ThemeState
+import androidx.lifecycle.viewModelScope
+import com.loc.newsapp.domain.manger.LocalUserManger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import android.util.Log
+import kotlinx.coroutines.flow.StateFlow
+
 @HiltViewModel
-class ThemeViewModel @Inject constructor() : ViewModel() {
+class ThemeViewModel @Inject constructor(
+    private val localUserManager: LocalUserManger
+) : ViewModel() {
 
-    private val _state = mutableStateOf(ThemeState())
-    val state: State<ThemeState> = _state
+    private val _currentTheme = MutableStateFlow<ThemeOption>(ThemeOption.SYSTEM_DEFAULT)
+    val currentTheme: StateFlow<ThemeOption> = _currentTheme
 
-    fun selectTheme(themeOption: ThemeOption) {
-        _state.value = _state.value.copy(selectedTheme = themeOption)
-        applyTheme(themeOption)
+    init {
+        getCurrentTheme()
     }
 
-    private fun applyTheme(themeOption: ThemeOption) {
+    private fun getCurrentTheme() {
+        viewModelScope.launch {
+            val theme = localUserManager.getTheme()
+            Log.d("ThemeViewModel", "Loading theme: $theme")
+            _currentTheme.emit(theme)
+        }
+    }
 
+    fun changeTheme(theme: ThemeOption) {
+        viewModelScope.launch(Dispatchers.IO) {
+            localUserManager.changeTheme(theme)
+            Log.d("ThemeViewModel", "Change theme: $theme")
+            _currentTheme.emit(theme)
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.loc.newsapp.presentation.theme
+package com.loc.newsapp.presentation.screens.themeswitcher
 
 data class ThemeState(
     val selectedTheme: ThemeOption = ThemeOption.SYSTEM_DEFAULT

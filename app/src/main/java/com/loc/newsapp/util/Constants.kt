@@ -8,4 +8,9 @@ object Constants {
     const val BASE_URL = "https://api.themoviedb.org/3/"
     const val MOVIES_DATABASE_NAME ="movie_db"
 
+    enum class Theme(val title: String){
+        SYSTEM_DEFAULT("system_default"),
+        LIGHT_MODE("light"),
+        DARK_MODE("dark")
+    }
 }

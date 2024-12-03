@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +34,8 @@ import com.loc.newsapp.presentation.movies_navigator.components.NewsBottomNaviga
 import com.loc.newsapp.presentation.screens.bookmark.BookmarkScreen
 import com.loc.newsapp.presentation.screens.bookmark.BookmarkViewModel
 import com.loc.newsapp.presentation.screens.home.HomeScreen
-import com.loc.newsapp.presentation.theme.ThemeScreen
+import com.loc.newsapp.presentation.screens.themeswitcher.ThemeScreen
+import com.loc.newsapp.presentation.screens.themeswitcher.ThemeState
 import com.loc.newsapp.presentation.screens.themeswitcher.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,15 +157,18 @@ fun NewsNavigator() {
             }
             composable(route = Route.ThemeScreen.route) {
                 val viewModel: ThemeViewModel = hiltViewModel()
-                val state = viewModel.state.value
+
+                // Подписываемся на state, предоставляемый ThemeViewModel
+                val currentTheme by viewModel.currentTheme.collectAsState()
 
                 ThemeScreen(
-                    state = state,
+                    state = ThemeState(selectedTheme = currentTheme), // Создаем ThemeState с текущей темой
                     onThemeSelected = { themeOption ->
-                        viewModel.selectTheme(themeOption)
+                        viewModel.changeTheme(themeOption) // Вызываем измененную функцию для изменения темы
                     }
                 )
             }
+
 
             composable(route = Route.InfoScreen.route) {
                 val viewModel: InfoViewModel = hiltViewModel()

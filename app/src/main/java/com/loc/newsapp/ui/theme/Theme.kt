@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.loc.newsapp.presentation.screens.themeswitcher.ThemeOption
 
 private val DarkColorScheme = darkColorScheme(
     background = Black,
@@ -32,18 +33,27 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun NewsAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    currentTheme: ThemeOption,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val darkTheme = when (currentTheme) {
+        ThemeOption.LIGHT -> false
+        ThemeOption.DARK -> true
+        ThemeOption.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+    }
+
+    val colorScheme = when(currentTheme) {
+        ThemeOption.LIGHT-> {
+            LightColorScheme
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        ThemeOption.DARK -> {
+            DarkColorScheme
+        }
+        else -> {
+            if (isSystemInDarkTheme()) {
+                DarkColorScheme
+            }else{LightColorScheme}
+        }
     }
 
     val view = LocalView.current
@@ -51,7 +61,7 @@ fun NewsAppTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
@@ -61,3 +71,4 @@ fun NewsAppTheme(
         content = content
     )
 }
+

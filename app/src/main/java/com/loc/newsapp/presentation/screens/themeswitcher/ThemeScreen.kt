@@ -1,5 +1,6 @@
-package com.loc.newsapp.presentation.theme
+package com.loc.newsapp.presentation.screens.themeswitcher
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,11 +40,16 @@ fun ThemeScreen(
             ThemeOptionItem(
                 label = themeOption.displayName,
                 isSelected = state.selectedTheme == themeOption,
-                onSelect = { onThemeSelected(themeOption) }
+                onSelect = {
+                    onThemeSelected(themeOption)
+                    Log.d("ThemeScreen", "Change theme: ${themeOption.name}")
+                }
             )
         }
     }
 }
+
+
 
 @Composable
 fun ThemeOptionItem(

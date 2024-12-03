@@ -6,11 +6,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.loc.newsapp.domain.manger.LocalUserManger
+import com.loc.newsapp.presentation.screens.themeswitcher.ThemeOption
 import com.loc.newsapp.util.Constants
+import com.loc.newsapp.util.Constants.Theme
 import com.loc.newsapp.util.Constants.USER_SETTINGS
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class LocalUserMangerImpl(
@@ -31,9 +35,38 @@ class LocalUserMangerImpl(
     companion object {
         private val APP_ENTRY = booleanPreferencesKey(Constants.APP_ENTRY)
     }
+
+
+    private val themeKey = stringPreferencesKey("theme")
+
+    override suspend fun getTheme(): ThemeOption {
+
+            val themeString = context.dataStore.data
+                .map { preferences -> preferences[themeKey] ?: ThemeOption.SYSTEM_DEFAULT.name }
+                .first()
+            return ThemeOption.values().find { it.name == themeString } ?: ThemeOption.SYSTEM_DEFAULT
+    }
+
+    override suspend fun changeTheme(value: ThemeOption): Preferences {
+
+            context.dataStore.edit { preferences ->
+                preferences[themeKey] = value.name
+            }
+            return context.dataStore.data.first()
+    }
+
+
+
 }
 
 private val readOnlyProperty = preferencesDataStore(name = USER_SETTINGS)
 
 val Context.dataStore: DataStore<Preferences> by readOnlyProperty
+
+
+
+
+
+
+
 
