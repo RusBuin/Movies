@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
@@ -26,11 +27,10 @@ import com.loc.newsapp.presentation.screens.details.DetailsEvent
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
-    movie: List<Movie>,
+    movie: List<AllMovie>,
     onClick: (Movie) -> Unit,
     event: (DetailsEvent) -> Unit
 ) {
-
     val isWaiting = remember { mutableStateOf(false) }
 
     if (movie.isEmpty()) {
@@ -44,17 +44,27 @@ fun MovieList(
         ) {
             itemsIndexed(movie) { index, item ->
                 item?.let {
+                    val movieItem = Movie(
+                        id = it.id,
+                        poster = it.poster,
+                        title = it.title,
+                        overview = it.overview,
+                        releaseDate = it.releaseDate,
+                        voteAverage = it.voteAverage,
+                        originalLanguage = it.originalLanguage
+                    )
+
                     MovieCard(
-                        movie = it,
+                        movie = movieItem,
                         onClick = {
                             isWaiting.value = true
                             Handler(Looper.getMainLooper()).postDelayed({
                                 isWaiting.value = false
-                                onClick(it)
-                            },80)
+                                onClick(movieItem)
+                            }, 80)
                         },
                         onBookMarkClick = {
-                            event(DetailsEvent.UpsertDeleteItem(it))
+                            event(DetailsEvent.UpsertDeleteItem(movieItem))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -65,6 +75,58 @@ fun MovieList(
         }
     }
 }
+@Composable
+fun MovieListBookmark(
+    modifier: Modifier = Modifier,
+    movie: List<Movie>,
+    onClick: (Movie) -> Unit,
+    event: (DetailsEvent) -> Unit
+) {
+    val isWaiting = remember { mutableStateOf(false) }
+
+    if (movie.isEmpty()) {
+        EmptyScreen()
+        return
+    } else {
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+            contentPadding = PaddingValues(all = ExtraSmallPadding2)
+        ) {
+            itemsIndexed(movie) { index, item ->
+                item?.let {
+                    val movieItem = Movie(
+                        id = it.id,
+                        poster = it.poster,
+                        title = it.title,
+                        overview = it.overview,
+                        releaseDate = it.releaseDate,
+                        voteAverage = it.voteAverage,
+                        originalLanguage = it.originalLanguage
+                    )
+
+                    MovieCard(
+                        movie = movieItem,
+                        onClick = {
+                            isWaiting.value = true
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                isWaiting.value = false
+                                onClick(movieItem)
+                            }, 80)
+                        },
+                        onBookMarkClick = {
+                            event(DetailsEvent.UpsertDeleteItem(movieItem))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MediumPadding1)
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun MovieList(

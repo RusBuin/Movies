@@ -3,8 +3,10 @@ package com.loc.newsapp.presentation.movies_navigator
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +36,7 @@ import com.loc.newsapp.presentation.movies_navigator.components.NewsBottomNaviga
 import com.loc.newsapp.presentation.screens.bookmark.BookmarkScreen
 import com.loc.newsapp.presentation.screens.bookmark.BookmarkViewModel
 import com.loc.newsapp.presentation.screens.home.HomeScreen
+import com.loc.newsapp.presentation.screens.home.HomeState
 import com.loc.newsapp.presentation.screens.themeswitcher.ThemeScreen
 import com.loc.newsapp.presentation.screens.themeswitcher.ThemeState
 import com.loc.newsapp.presentation.screens.themeswitcher.ThemeViewModel
@@ -41,7 +44,6 @@ import com.loc.newsapp.presentation.screens.themeswitcher.ThemeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsNavigator() {
-
     val homeText = stringResource(R.string.icon_home)
     val bookmarkText = stringResource(R.string.icon_bookmark)
     val moodText = stringResource(R.string.icon_mood)
@@ -58,9 +60,10 @@ fun NewsNavigator() {
 
     val navController = rememberNavController()
     val backStackState = navController.currentBackStackEntryAsState().value
-    var selectedItem by rememberSaveable {
-        mutableStateOf(0)
-    }
+
+    var selectedItem by rememberSaveable { mutableStateOf(0) }
+
+    // Выбор текущего экрана на основе backStack
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.BookmarkScreen.route -> 1
@@ -69,145 +72,133 @@ fun NewsNavigator() {
         else -> 0
     }
 
-    //Hide the bottom navigation when the user is in the details screen
-    val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.BookmarkScreen.route ||
-                backStackState?.destination?.route == Route.ThemeScreen.route ||
-                backStackState?.destination?.route == Route.InfoScreen.route
+    // Скрытие нижней навигации на экране деталей
+    val isBottomBarVisible = remember(backStackState) {
+        backStackState?.destination?.route in listOf(
+            Route.HomeScreen.route,
+            Route.BookmarkScreen.route,
+            Route.ThemeScreen.route,
+            Route.InfoScreen.route
+        )
     }
 
-
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        if (isBottomBarVisible) {
-            NewsBottomNavigation(
-                items = bottomNavigationItems,
-                selectedItem = selectedItem,
-                onItemClick = { index ->
-                    when (index) {
-                        0 -> navigateToTab(
-                            navController = navController,
-                            route = Route.HomeScreen.route
-                        )
-
-                        1 -> navigateToTab(
-                            navController = navController,
-                            route = Route.BookmarkScreen.route
-                        )
-                        2 -> navigateToTab(
-                            navController = navController,
-                            route = Route.ThemeScreen.route
-                        )
-                        3 -> navigateToTab(
-                            navController = navController,
-                            route = Route.InfoScreen.route
-                        )
-
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (isBottomBarVisible) {
+                NewsBottomNavigation(
+                    items = bottomNavigationItems,
+                    selectedItem = selectedItem,
+                    onItemClick = { index ->
+                        navigateToTab(navController, index)
                     }
-                }
-            )
+                )
+            }
         }
-    }) {
-        val bottomPadding = it.calculateBottomPadding()
+    ) { paddingValues ->
+        val bottomPadding = paddingValues.calculateBottomPadding()
         NavHost(
             navController = navController,
             startDestination = Route.HomeScreen.route,
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
-            composable(route = Route.HomeScreen.route) { backStackEntry ->
+            // Экран главной страницы (HomeScreen)
+            composable(route = Route.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
-                val movie = viewModel.news.collectAsLazyPagingItems()
-                HomeScreen(
-                    movie = movie,
-                    navigateToDetails = { movie ->
-                        navigateToDetails(
-                            navController = navController,
-                            movie = movie
-                        )
-                    },
-                    event = viewModel::onEvent
-                )
+                val state = viewModel.state.value
+                HomeScreenContent(state, navController, viewModel)
             }
+
+            // Экран деталей (DetailsScreen)
             composable(route = Route.DetailsScreen.route) {
                 val viewModel: DetailsViewModel = hiltViewModel()
-                navController.previousBackStackEntry?.savedStateHandle?.get<Movie?>("movie")
-                    ?.let { movie ->
-                        DetailsScreen(
-                            movie = movie,
-                            event = viewModel::onEvent,
-                            navigateUp = { navController.navigateUp() }
-                        )
-                    }
-
+                val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("movie")
+                movie?.let {
+                    DetailsScreen(movie = it, event = viewModel::onEvent, navigateUp = { navController.navigateUp() })
+                }
             }
+
+            // Экран закладок (BookmarkScreen)
             composable(route = Route.BookmarkScreen.route) {
                 val viewModel: BookmarkViewModel = hiltViewModel()
-                val state = viewModel.state.value
-                OnBackClickStateSaver(navController = navController)
-                BookmarkScreen(
-                    state = state,
-                    navigateToDetails = { movie ->
-                        navigateToDetails(
-                            navController = navController,
-                            movie = movie
-                        )
-                    },
-                    event = viewModel::onEvent
-                )
+                BookmarkScreenContent(viewModel, navController)
             }
+
+            // Экран выбора темы (ThemeScreen)
             composable(route = Route.ThemeScreen.route) {
                 val viewModel: ThemeViewModel = hiltViewModel()
-
-                // Подписываемся на state, предоставляемый ThemeViewModel
                 val currentTheme by viewModel.currentTheme.collectAsState()
-
-                ThemeScreen(
-                    state = ThemeState(selectedTheme = currentTheme), // Создаем ThemeState с текущей темой
-                    onThemeSelected = { themeOption ->
-                        viewModel.changeTheme(themeOption) // Вызываем измененную функцию для изменения темы
-                    }
-                )
+                ThemeScreen(state = ThemeState(selectedTheme = currentTheme)) { themeOption ->
+                    viewModel.changeTheme(themeOption)
+                }
             }
 
-
+            // Экран информации (InfoScreen)
             composable(route = Route.InfoScreen.route) {
                 val viewModel: InfoViewModel = hiltViewModel()
-                val state = viewModel.state.value
-                OnBackClickStateSaver(navController = navController)
-
-                InfoScreen(
-                    state = state
-                )
+                InfoScreen(state = viewModel.state.value)
             }
         }
     }
 }
 
 @Composable
-fun OnBackClickStateSaver(navController: NavController) {
-    BackHandler(true) {
-        navigateToTab(
-            navController = navController,
-            route = Route.HomeScreen.route
-        )
+fun HomeScreenContent(state: HomeState, navController: NavController, viewModel: HomeViewModel) {
+    when {
+        state.isLoading -> CircularProgressIndicator()
+        state.isError -> Text("Ошибка загрузки данных")
+        else -> {
+            HomeScreen(
+                movieFromApi = state.moviesPagingItems, // Передаем LazyPagingItems из состояния
+                movieFromLocal = state.movies,           // Локальные фильмы
+                navigateToDetails = { movie ->
+                    navigateToDetails(navController, movie)
+                },
+                event = viewModel::onEvent
+            )
+        }
     }
 }
 
-private fun navigateToTab(navController: NavController, route: String) {
+
+@Composable
+fun BookmarkScreenContent(viewModel: BookmarkViewModel, navController: NavController) {
+    val state = viewModel.state.value
+    OnBackClickStateSaver(navController)
+    BookmarkScreen(
+        state = state,
+        navigateToDetails = { movie ->
+            navigateToDetails(navController, movie)
+        },
+        event = viewModel::onEvent
+    )
+}
+
+@Composable
+fun OnBackClickStateSaver(navController: NavController) {
+    BackHandler(true) {
+        navigateToTab(navController, 0)
+    }
+}
+
+private fun navigateToTab(navController: NavController, index: Int) {
+    val route = when (index) {
+        0 -> Route.HomeScreen.route
+        1 -> Route.BookmarkScreen.route
+        2 -> Route.ThemeScreen.route
+        3 -> Route.InfoScreen.route
+        else -> Route.HomeScreen.route
+    }
     navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screen_route ->
-            popUpTo(screen_route) {
-                saveState = true
-            }
+        navController.graph.startDestinationRoute?.let { screenRoute ->
+            popUpTo(screenRoute) { saveState = true }
         }
         launchSingleTop = true
         restoreState = true
     }
 }
 
-private fun navigateToDetails(navController: NavController, movie: Movie){
-    navController.currentBackStackEntry?.savedStateHandle?.set("movie", movie)
-    navController.navigate(
-        route = Route.DetailsScreen.route
-    )
+private fun navigateToDetails(navController: NavController, movie: Movie) {
+    navController.previousBackStackEntry?.savedStateHandle?.set("movie", movie)
+    navController.navigate(Route.DetailsScreen.route)
 }

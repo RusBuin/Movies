@@ -1,7 +1,9 @@
 package com.loc.newsapp.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
+import com.loc.newsapp.data.local.AllMovieDao
 import com.loc.newsapp.data.local.MovieDao
 import com.loc.newsapp.data.local.MovieDatabase
 import com.loc.newsapp.data.manger.LocalUserMangerImpl
@@ -33,6 +35,8 @@ object AppModule {
     ): LocalUserManger = LocalUserMangerImpl(context = application)
 
 
+
+
     @Provides
     @Singleton
     fun provideApiInstance(): MovieApi {
@@ -48,9 +52,10 @@ object AppModule {
     @Singleton
     fun provideNewsRepository(
         movieApi: MovieApi,
-        movieDao: MovieDao
+        movieDao: MovieDao,
+        allMovieDao: AllMovieDao
     ): MovieRepository {
-        return MovieRepositoryImpl(movieApi,movieDao)
+        return MovieRepositoryImpl(movieApi,movieDao, allMovieDao)
     }
 
     @Provides
@@ -82,5 +87,17 @@ object AppModule {
     fun provideNewsDao(
         movieDatabase: MovieDatabase
     ): MovieDao = movieDatabase.movieDao
+
+    @Provides
+    @Singleton
+    fun provideAllMoviesDao(
+        movieDatabase: MovieDatabase
+    ): AllMovieDao = movieDatabase.allMovieDao
+
+
+        @Provides
+        fun provideContext(application: android.app.Application): Context {
+            return application.applicationContext
+        }
 
 }

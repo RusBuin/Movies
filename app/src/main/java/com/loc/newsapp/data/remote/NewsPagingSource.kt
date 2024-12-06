@@ -2,6 +2,7 @@ package com.loc.newsapp.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.domain.model.Movie
 
 class NewsPagingSource(

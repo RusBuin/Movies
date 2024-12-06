@@ -43,25 +43,40 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.presentation.screens.home.HomeViewModel
 
 @Composable
 fun MovieCard(
     modifier: Modifier = Modifier,
-    movie: Movie,
+    movie: Any,  // Параметр типа Any для универсальности
     onClick: (() -> Unit)? = null,
     onBookMarkClick: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
-    val isBookmarked = homeViewModel.bookmarkedMovies[movie.id.toString()] ?: false
-
-    LaunchedEffect(Unit) {
-        homeViewModel.isMovieBookmarked(movie)
+    // Проверяем, является ли объект Movie или AllMovie
+    val actualMovie = when (movie) {
+        is Movie -> movie
+        is AllMovie -> Movie(
+            id = movie.id,
+            poster = movie.poster,
+            title = movie.title,
+            overview = movie.overview,
+            releaseDate = movie.releaseDate,
+            voteAverage = movie.voteAverage,
+            originalLanguage = movie.originalLanguage
+        )
+        else -> return  // Если передан неподдерживаемый тип, ничего не делаем
     }
 
-    val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster}"
+    val context = LocalContext.current
+    val isBookmarked = homeViewModel.bookmarkedMovies[actualMovie.id.toString()] ?: false
+
+    LaunchedEffect(Unit) {
+        homeViewModel.isMovieBookmarked(actualMovie)
+    }
+
+    val imageUrl = "https://image.tmdb.org/t/p/w500${actualMovie.poster}"
     Log.d("MovieCard", "Full Image URL: $imageUrl")
 
     Row(
@@ -83,7 +98,7 @@ fun MovieCard(
                 .weight(1f)
         ) {
             Text(
-                text = movie.title,
+                text = actualMovie.title,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.text_title),
                 maxLines = 2,
@@ -100,4 +115,3 @@ fun MovieCard(
         }
     }
 }
-

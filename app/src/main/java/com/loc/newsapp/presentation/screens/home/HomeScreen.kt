@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.loc.newsapp.R
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.common.MovieList
@@ -35,23 +36,11 @@ import com.loc.newsapp.presentation.screens.details.DetailsViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    movie: LazyPagingItems<Movie>,
+    movieFromApi: LazyPagingItems<Movie>? = null,
+    movieFromLocal: List<AllMovie>? = null,
     navigateToDetails: (Movie) -> Unit,
-    event: (DetailsEvent) -> Unit) {
-
-
-    val titles by remember {
-        derivedStateOf {
-            if (movie.itemCount > 10) {
-                movie.itemSnapshotList.items
-                    .slice(IntRange(start = 0, endInclusive = 9))
-                    .joinToString(separator = " \uD83D\uDFE5 ") { it.title }
-            } else {
-                ""
-            }
-        }
-    }
-
+    event: (DetailsEvent) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,24 +56,24 @@ fun HomeScreen(
                 .padding(horizontal = MediumPadding1)
         )
 
-
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        Text(
-            text = titles, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = MediumPadding1)
-                .basicMarquee(), fontSize = 12.sp,
-            color = colorResource(id = R.color.placeholder)
-        )
-
-        Spacer(modifier = Modifier.height(MediumPadding1))
-
-        MovieList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            movie = movie,
-            onClick = navigateToDetails,
-            event = event
-        )
+        if (movieFromApi != null) {
+            MovieList(
+                modifier = Modifier.padding(horizontal = MediumPadding1),
+                movie = movieFromApi,
+                onClick = navigateToDetails,
+                event = event
+            )
+        } else if (movieFromLocal != null) {
+            MovieList(
+                modifier = Modifier.padding(horizontal = MediumPadding1),
+                movie = movieFromLocal,
+                onClick = navigateToDetails,
+                event = event
+            )
+        } else {
+            Text(text = "Loading...", modifier = Modifier.fillMaxSize())
+        }
     }
 }

@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.loc.newsapp.R
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.common.MovieList
+import com.loc.newsapp.presentation.common.MovieListBookmark
 import com.loc.newsapp.presentation.screens.details.DetailsEvent
 
 
@@ -41,7 +43,7 @@ fun BookmarkScreen(
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        MovieList(
+        MovieListBookmark(
             movie = state.movie,
             onClick = navigateToDetails,
             event = event
