@@ -1,11 +1,13 @@
 package com.loc.newsapp.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.loc.newsapp.data.local.MovieDao
 import com.loc.newsapp.data.local.MovieDatabase
 import com.loc.newsapp.data.manger.LocalUserMangerImpl
 import com.loc.newsapp.data.remote.MovieApi
+import com.loc.newsapp.data.remote.NetworkHelper
 import com.loc.newsapp.data.repository.MovieRepositoryImpl
 import com.loc.newsapp.domain.manger.LocalUserManger
 import com.loc.newsapp.domain.repository.MovieRepository
@@ -17,6 +19,7 @@ import com.loc.newsapp.util.Constants.MOVIES_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -76,6 +79,18 @@ object AppModule {
             .fallbackToDestructiveMigration()
             .build()
     }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object NetworkModule {
+
+        @Provides
+        @Singleton
+        fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
+            return NetworkHelper(context)
+        }
+    }
+
 
     @Provides
     @Singleton

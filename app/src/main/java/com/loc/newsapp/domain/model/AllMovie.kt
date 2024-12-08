@@ -6,10 +6,9 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
-@Entity(tableName = "movies")
-data class Movie(
+@Entity(tableName = "all_movies")
+data class AllMovie(
     @PrimaryKey(autoGenerate = false) val id: Int,
     @SerializedName("poster_path") val poster: String?,
     val title: String,
@@ -18,3 +17,19 @@ data class Movie(
     @SerializedName("vote_average") val voteAverage: Double,
     @SerializedName("original_language") val originalLanguage: String
 ): Parcelable
+
+
+
+// Функция расширения для преобразования AllMovie в Movie
+public fun AllMovie.toMovie(): Movie {
+    return Movie(
+        id = this.id,
+        title = this.title,
+        poster = this.poster,
+        releaseDate = this.releaseDate,
+        voteAverage = this.voteAverage,
+        originalLanguage = this.originalLanguage,
+        overview = this.overview,
+        )
+}
+

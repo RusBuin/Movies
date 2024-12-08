@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.loc.newsapp.data.local.MovieDao
 import com.loc.newsapp.data.remote.NewsPagingSource
 import com.loc.newsapp.data.remote.MovieApi
+import com.loc.newsapp.domain.model.AllMovie
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +24,12 @@ class MovieRepositoryImpl(
             }
         ).flow
     }
-
+    override suspend fun insertAllMovies(movies: List<AllMovie>) {
+        movieDao.insertAllMovies(movies)
+    }
+    override fun getAllMovies(): Flow<List<AllMovie>> {
+        return movieDao.getAllMovies()
+    }
 
     override suspend fun upsertItems(movie: Movie) {
        movieDao.upsert(movie)

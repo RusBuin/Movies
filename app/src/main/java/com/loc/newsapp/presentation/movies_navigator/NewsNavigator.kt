@@ -116,9 +116,12 @@ fun NewsNavigator() {
         ) {
             composable(route = Route.HomeScreen.route) { backStackEntry ->
                 val viewModel: HomeViewModel = hiltViewModel()
-                val movie = viewModel.news.collectAsLazyPagingItems()
+
+                // Получаем список фильмов
+                val movies = viewModel.movies
+
                 HomeScreen(
-                    movie = movie,
+                    movies = movies,
                     navigateToDetails = { movie ->
                         navigateToDetails(
                             navController = navController,
@@ -128,6 +131,8 @@ fun NewsNavigator() {
                     event = viewModel::onEvent
                 )
             }
+
+
             composable(route = Route.DetailsScreen.route) {
                 val viewModel: DetailsViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<Movie?>("movie")
