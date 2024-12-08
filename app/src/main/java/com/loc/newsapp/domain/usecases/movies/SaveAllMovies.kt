@@ -17,13 +17,11 @@ class SaveAllMovies @Inject constructor(
         var allMovies = mutableListOf<AllMovie>()
         var totalPages: Int
 
-        Log.d(TAG, "Загрузка фильмов началась")
+        Log.d(TAG, "Starting...")
 
-        // Загружаем фильмы постранично
         do {
             try {
-                // Получаем страницу с фильмами
-                Log.d(TAG, "Загрузка страницы $page")
+                Log.d(TAG, "Page: $page")
                 val response = movieApi.getMovies(page)
 
                 val movies = response.results.map { movieResult ->
@@ -34,35 +32,33 @@ class SaveAllMovies @Inject constructor(
                         poster = movieResult.poster,
                         releaseDate = movieResult.releaseDate,
                         voteAverage = movieResult.voteAverage,
-                        originalLanguage = movieResult.originalLanguage
+                        originalLanguage = movieResult.originalLanguage,
+                        popularity = movieResult.popularity
                     )
                 }
 
-                // Добавляем фильмы в список
                 allMovies.addAll(movies)
 
                 movies.forEach {
-                    Log.d(TAG, "Загружен фильм: ${it.title}")
+                    Log.d(TAG, "Film: ${it.title}")
                 }
 
                 totalPages = response.totalPages
-                Log.d(TAG, "Получено $totalPages страниц. Загружено фильмов на странице $page.")
-                page++ // Переходим к следующей странице
+                page++
 
             } catch (e: Exception) {
-                // Логируем ошибку, если запрос не удается
-                Log.e(TAG, "Ошибка при загрузке страницы $page", e)
+                Log.e(TAG, "Error on $page", e)
                 break
             }
-        } while (page <= totalPages) // Прекращаем, когда все страницы загружены
+        } while (page <= totalPages)
 
-        // Сохраняем все фильмы в локальную базу данных
-        if (allMovies.isNotEmpty()) {
-            Log.d(TAG, "Сохранение ${allMovies.size} фильмов в базу данных...")
-            movieRepository.insertAllMovies(allMovies)
-            Log.d(TAG, "Все фильмы успешно сохранены в базу данных.")
+        val sortedMovies = allMovies.sortedByDescending { it.popularity }
+
+        if (sortedMovies.isNotEmpty()) {
+            Log.d(TAG, "Saving... ${sortedMovies.size} in local database")
+            movieRepository.insertAllMovies(sortedMovies)
         } else {
-            Log.d(TAG, "Нет фильмов для сохранения.")
+            Log.d(TAG, "0 films")
         }
     }
 }

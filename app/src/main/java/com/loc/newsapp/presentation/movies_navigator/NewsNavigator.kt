@@ -116,12 +116,8 @@ fun NewsNavigator() {
         ) {
             composable(route = Route.HomeScreen.route) { backStackEntry ->
                 val viewModel: HomeViewModel = hiltViewModel()
-
-                // Получаем список фильмов
-                val movies = viewModel.movies
-
                 HomeScreen(
-                    movies = movies,
+
                     navigateToDetails = { movie ->
                         navigateToDetails(
                             navController = navController,

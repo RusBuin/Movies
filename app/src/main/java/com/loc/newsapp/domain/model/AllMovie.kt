@@ -15,13 +15,13 @@ data class AllMovie(
     val overview: String,
     @SerializedName("release_date") val releaseDate: String,
     @SerializedName("vote_average") val voteAverage: Double,
-    @SerializedName("original_language") val originalLanguage: String
+    @SerializedName("original_language") val originalLanguage: String,
+    val popularity: Double
 ): Parcelable
 
 
 
-// Функция расширения для преобразования AllMovie в Movie
-public fun AllMovie.toMovie(): Movie {
+ fun AllMovie.toMovie(): Movie {
     return Movie(
         id = this.id,
         title = this.title,
@@ -30,6 +30,6 @@ public fun AllMovie.toMovie(): Movie {
         voteAverage = this.voteAverage,
         originalLanguage = this.originalLanguage,
         overview = this.overview,
-        )
+        popularity = this.popularity)
 }
 

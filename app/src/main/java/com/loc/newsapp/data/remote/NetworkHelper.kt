@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 class NetworkHelper @Inject constructor(private val context: Context) {
 
-    // Функция для проверки подключения к интернету
     fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

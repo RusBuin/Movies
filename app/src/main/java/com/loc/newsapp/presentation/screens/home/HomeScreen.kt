@@ -27,7 +27,9 @@ import androidx.paging.compose.LazyPagingItems
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
+import com.loc.newsapp.presentation.common.EmptyScreen
 import com.loc.newsapp.presentation.common.MovieList
+import com.loc.newsapp.presentation.common.ShimmerEffect
 import com.loc.newsapp.presentation.screens.details.DetailsEvent
 import com.loc.newsapp.presentation.screens.details.DetailsViewModel
 
@@ -35,10 +37,13 @@ import com.loc.newsapp.presentation.screens.details.DetailsViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    movies: List<Movie>,  // Теперь принимаем обычный список фильмов
+    viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetails: (Movie) -> Unit,
     event: (DetailsEvent) -> Unit
 ) {
+    val movies by remember { derivedStateOf { viewModel.movies } }
+    val isLoading by remember { derivedStateOf { viewModel.isLoading } }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,47 +61,15 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        // Показываем список фильмов
-        MovieList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            movie = movies,
-            onClick = navigateToDetails,
-            event = event
-        )
+        if (isLoading) {
+            ShimmerEffect()
+        } else {
+            MovieList(
+                modifier = Modifier.padding(horizontal = MediumPadding1),
+                movie = movies,
+                onClick = navigateToDetails,
+                event = event
+            )
+        }
     }
 }
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun HomeScreen(
-    movies: LazyPagingItems<Movie>,  // Теперь принимаем обычный список фильмов
-    navigateToDetails: (Movie) -> Unit,
-    event: (DetailsEvent) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = MediumPadding1)
-            .statusBarsPadding()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .width(150.dp)
-                .height(30.dp)
-                .padding(horizontal = MediumPadding1)
-        )
-
-        Spacer(modifier = Modifier.height(MediumPadding1))
-
-        // Показываем список фильмов
-        MovieList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            movie = movies,
-            onClick = navigateToDetails,
-            event = event
-        )
-    }
-}
-

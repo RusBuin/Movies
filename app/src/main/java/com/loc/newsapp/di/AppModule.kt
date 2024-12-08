@@ -13,7 +13,6 @@ import com.loc.newsapp.domain.manger.LocalUserManger
 import com.loc.newsapp.domain.repository.MovieRepository
 
 import com.loc.newsapp.domain.usecases.movies.GetMovie
-import com.loc.newsapp.domain.usecases.movies.MovieUseCases
 import com.loc.newsapp.util.Constants.BASE_URL
 import com.loc.newsapp.util.Constants.MOVIES_DATABASE_NAME
 import dagger.Module
@@ -56,15 +55,7 @@ object AppModule {
         return MovieRepositoryImpl(movieApi,movieDao)
     }
 
-    @Provides
-    @Singleton
-    fun provideNewsUseCases(
-        movieRepository: MovieRepository
-    ): MovieUseCases {
-        return MovieUseCases(
-            getMovie = GetMovie(movieRepository)
-        )
-    }
+
 
     @Provides
     @Singleton

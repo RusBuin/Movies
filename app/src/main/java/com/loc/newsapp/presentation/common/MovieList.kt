@@ -23,6 +23,7 @@ import com.loc.newsapp.domain.model.Movie
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
 import com.loc.newsapp.presentation.screens.details.DetailsEvent
+
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
